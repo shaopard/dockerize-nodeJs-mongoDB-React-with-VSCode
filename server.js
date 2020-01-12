@@ -1,15 +1,36 @@
 const express = require("express");
+const app = express();
+const connectDb = require("./src/connection");
+const User = require("./src/User.model");
+const cors = require("cors");
 
 const PORT = 8081;
-const HOST = '0.0.0.0';
 
-const app = express();
+app.use(cors());
 
-app.get("/", (req, res) => {
-    console.log(`Request received; start handling it: \n`);
-    res.send("Hello from Node.js app \n");
+app.get("/users", async (req, res) => {
+    const users = await User.find();
+
+    res.json(users);
+    res.send("Get users \n");
 });
 
-app.listen(PORT, HOST, () => {
-    console.log(`Running on http://${HOST}:${PORT}`);
+app.get("/user-create", async(req, res) => {
+    const user = new User({
+        username: "userTest"
+    });
+
+    await user.save().then(() => {
+        console.log("User created");
+    });
+
+    res.send("User created \n");
+});
+
+app.listen(PORT, function () {
+    console.log(`Listening on ${PORT}`);
+
+    connectDb().then(() => {
+        console.log("MongoDb connected");
+    });
 });
