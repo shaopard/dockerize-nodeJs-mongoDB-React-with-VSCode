@@ -12,7 +12,6 @@ app.get("/users", async (req, res) => {
     const users = await User.find();
 
     res.json(users);
-    res.send("Get users \n");
 });
 
 app.get("/user-create", async(req, res) => {
